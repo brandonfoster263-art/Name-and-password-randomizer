@@ -2,6 +2,10 @@
 
 A small dependency-free Node.js CLI that generates random names and secure passwords.
 
+Each name carries a random 6-digit suffix, which multiplies the word lists into
+a pool of several billion unique names per style — far more than the requested
+50 million — without storing a giant list of literal names.
+
 ## Requirements
 
 - Node.js 18+
@@ -26,16 +30,16 @@ randgen both
 
 ```sh
 $ node bin/cli.js name
-Jordan Mitchell
+Jordan Mitchell #048213
 
 $ node bin/cli.js name --style username
-SwiftFalcon42
+SwiftFalcon048213
 
 $ node bin/cli.js password --length 20
 xT8!kLp2@qZ9vR4#mN7$
 
 $ node bin/cli.js both --style username --length 12
-Name: BraveOtter7
+Name: BraveOtter719042
 Password: aQ3!xP9mZ@kL
 ```
 
