@@ -1,0 +1,16 @@
+{
+  "name": "name-password-randomizer",
+  "version": "1.0.0",
+  "description": "CLI tool that generates random names (realistic or usernames) and secure passwords.",
+  "type": "module",
+  "bin": {
+    "randgen": "./bin/cli.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
