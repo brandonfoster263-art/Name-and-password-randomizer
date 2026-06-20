@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Name &amp; Password Randomizer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Name &amp; Password Randomizer</h1>
+
+    <section class="card">
+      <h2>Name</h2>
+      <div class="controls">
+        <label>
+          Style
+          <select id="name-style">
+            <option value="realistic">Realistic</option>
+            <option value="username">Username</option>
+          </select>
+        </label>
+        <button id="generate-name">Generate</button>
+      </div>
+      <div class="result-row">
+        <input id="name-output" type="text" readonly placeholder="Click Generate..." />
+        <button class="copy-btn" data-target="name-output">Copy</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Password</h2>
+      <div class="controls">
+        <label>
+          Length
+          <input id="password-length" type="number" min="4" max="128" value="16" />
+        </label>
+        <label class="checkbox"><input id="opt-upper" type="checkbox" checked /> Uppercase</label>
+        <label class="checkbox"><input id="opt-lower" type="checkbox" checked /> Lowercase</label>
+        <label class="checkbox"><input id="opt-digits" type="checkbox" checked /> Digits</label>
+        <label class="checkbox"><input id="opt-symbols" type="checkbox" checked /> Symbols</label>
+        <button id="generate-password">Generate</button>
+      </div>
+      <div class="result-row">
+        <input id="password-output" type="text" readonly placeholder="Click Generate..." />
+        <button class="copy-btn" data-target="password-output">Copy</button>
+      </div>
+      <p id="password-error" class="error"></p>
+    </section>
+
+    <section class="card">
+      <button id="generate-both" class="primary">Generate Both</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
