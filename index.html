@@ -43,6 +43,22 @@
       <h2>Password</h2>
       <div class="controls">
         <label>
+          Style
+          <select id="password-style">
+            <option value="passphrase">Memorable</option>
+            <option value="random">Random characters</option>
+          </select>
+        </label>
+        <button id="generate-password">Generate</button>
+      </div>
+      <div class="controls" id="passphrase-controls">
+        <label>
+          Words
+          <input id="password-words" type="number" min="3" max="8" value="4" />
+        </label>
+      </div>
+      <div class="controls hidden" id="random-controls">
+        <label>
           Length
           <input id="password-length" type="number" min="4" max="128" value="16" />
         </label>
@@ -50,7 +66,6 @@
         <label class="checkbox"><input id="opt-lower" type="checkbox" checked /> Lowercase</label>
         <label class="checkbox"><input id="opt-digits" type="checkbox" checked /> Digits</label>
         <label class="checkbox"><input id="opt-symbols" type="checkbox" checked /> Symbols</label>
-        <button id="generate-password">Generate</button>
       </div>
       <div class="result-row">
         <input id="password-output" type="text" readonly placeholder="Click Generate..." />

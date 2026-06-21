@@ -54,13 +54,30 @@ const ADJECTIVES = [
   'Scarlet', 'Tangled', 'Untamed', 'Vivid',
 ];
 
+// Mixes several themes so a generated username isn't always an animal
+// name. Keep categories roughly balanced when adding new words.
 const NOUNS = [
-  'Falcon', 'Tiger', 'Comet', 'Panther', 'Otter', 'Phoenix', 'Wolf',
-  'Raven', 'Cobra', 'Lynx', 'Badger', 'Hawk', 'Dragon', 'Viper', 'Bear',
-  'Eagle', 'Shark', 'Fox', 'Mantis', 'Jaguar', 'Heron', 'Imp', 'Jackal',
-  'Kestrel', 'Lion', 'Mongoose', 'Newt', 'Orca', 'Puma', 'Quokka', 'Rhino',
-  'Stallion', 'Toucan', 'Urchin', 'Vulture', 'Walrus', 'Yak', 'Zebra',
-  'Antelope', 'Bison',
+  // Animals
+  'Falcon', 'Tiger', 'Panther', 'Otter', 'Wolf', 'Raven', 'Cobra', 'Lynx',
+  'Badger', 'Hawk', 'Dragon', 'Viper', 'Bear', 'Eagle', 'Shark', 'Fox',
+  'Mantis', 'Jaguar', 'Heron', 'Jackal', 'Kestrel', 'Lion', 'Mongoose',
+  'Newt', 'Orca', 'Puma', 'Quokka', 'Rhino', 'Stallion', 'Toucan',
+  'Urchin', 'Vulture', 'Walrus', 'Yak', 'Zebra', 'Antelope', 'Bison',
+  // Cosmic
+  'Nebula', 'Quasar', 'Meteor', 'Galaxy', 'Eclipse', 'Aurora', 'Phoenix',
+  'Photon', 'Pulsar', 'Vortex', 'Nova', 'Orbit', 'Starlight', 'Cosmos',
+  'Meteorite', 'Supernova', 'Comet',
+  // Nature & weather
+  'Storm', 'Thunder', 'Ember', 'Glacier', 'Canyon', 'Summit', 'Tundra',
+  'Horizon', 'Cascade', 'Boulder', 'Cyclone', 'Blizzard', 'Volcano',
+  'Tempest', 'Monsoon',
+  // Myth & legend
+  'Golem', 'Specter', 'Oracle', 'Titan', 'Wraith', 'Phantom', 'Sorcerer',
+  'Paladin', 'Valkyrie', 'Behemoth',
+  // Tech
+  'Cipher', 'Vector', 'Pixel', 'Circuit', 'Nexus', 'Quantum', 'Byte',
+  'Signal', 'Matrix', 'Glitch', 'Protocol', 'Firewall', 'Beacon',
+  'Catalyst', 'Anomaly',
 ];
 
 const SUFFIX_RANGE = 1_000_000;
@@ -76,6 +93,32 @@ function generateRealisticName() {
 
 function generateUsername() {
   return `${pick(ADJECTIVES)}${pick(NOUNS)}${randomSuffix()}`;
+}
+
+const PASSPHRASE_WORDS = [...ADJECTIVES, ...NOUNS];
+const PASSPHRASE_SYMBOLS = '!@#$%&*';
+
+function pickUniqueWords(count) {
+  if (count < 2) throw new Error('words must be at least 2');
+  if (count > PASSPHRASE_WORDS.length) {
+    throw new Error(`words must be at most ${PASSPHRASE_WORDS.length}`);
+  }
+  const used = new Set();
+  const chosen = [];
+  while (chosen.length < count) {
+    const index = secureRandomInt(PASSPHRASE_WORDS.length);
+    if (used.has(index)) continue;
+    used.add(index);
+    chosen.push(PASSPHRASE_WORDS[index]);
+  }
+  return chosen;
+}
+
+function generatePassphrase({ words = 4 } = {}) {
+  const chosen = pickUniqueWords(words);
+  const number = String(secureRandomInt(100)).padStart(2, '0');
+  const symbol = PASSPHRASE_SYMBOLS[secureRandomInt(PASSPHRASE_SYMBOLS.length)];
+  return `${chosen.join('-')}-${number}${symbol}`;
 }
 
 const CHARSETS = {
@@ -113,7 +156,7 @@ function generatePassword({ length, upper, lower, digits, symbols }) {
   return chars.join('');
 }
 
-function readPasswordOptions() {
+function readRandomPasswordOptions() {
   return {
     length: parseInt(document.getElementById('password-length').value, 10),
     upper: document.getElementById('opt-upper').checked,
@@ -122,6 +165,22 @@ function readPasswordOptions() {
     symbols: document.getElementById('opt-symbols').checked,
   };
 }
+
+function generatePasswordForCurrentStyle() {
+  const style = document.getElementById('password-style').value;
+  if (style === 'random') return generatePassword(readRandomPasswordOptions());
+  const words = parseInt(document.getElementById('password-words').value, 10);
+  return generatePassphrase({ words });
+}
+
+function updatePasswordStyleControls() {
+  const isRandom = document.getElementById('password-style').value === 'random';
+  document.getElementById('random-controls').classList.toggle('hidden', !isRandom);
+  document.getElementById('passphrase-controls').classList.toggle('hidden', isRandom);
+}
+
+document.getElementById('password-style').addEventListener('change', updatePasswordStyleControls);
+updatePasswordStyleControls();
 
 function generateNameForCurrentStyle() {
   const style = document.getElementById('name-style').value;
@@ -136,7 +195,7 @@ document.getElementById('generate-password').addEventListener('click', () => {
   const errorEl = document.getElementById('password-error');
   errorEl.textContent = '';
   try {
-    document.getElementById('password-output').value = generatePassword(readPasswordOptions());
+    document.getElementById('password-output').value = generatePasswordForCurrentStyle();
   } catch (err) {
     errorEl.textContent = err.message;
   }
@@ -147,7 +206,7 @@ document.getElementById('generate-both').addEventListener('click', () => {
   errorEl.textContent = '';
   document.getElementById('name-output').value = generateNameForCurrentStyle();
   try {
-    document.getElementById('password-output').value = generatePassword(readPasswordOptions());
+    document.getElementById('password-output').value = generatePasswordForCurrentStyle();
   } catch (err) {
     errorEl.textContent = err.message;
   }
@@ -160,23 +219,19 @@ function randomRange(min, max) {
 const CHAOS_LEVELS = {
   calm: {
     nameStyle: () => 'realistic',
-    passwordLength: () => 10,
-    categories: { upper: false, lower: true, digits: true, symbols: false },
+    words: () => 3,
   },
   wild: {
     nameStyle: () => 'realistic',
-    passwordLength: () => randomRange(12, 18),
-    categories: { upper: true, lower: true, digits: true, symbols: false },
+    words: () => 4,
   },
   crazy: {
     nameStyle: () => 'username',
-    passwordLength: () => randomRange(18, 30),
-    categories: { upper: true, lower: true, digits: true, symbols: true },
+    words: () => 5,
   },
   chaos: {
     nameStyle: () => (secureRandomInt(2) === 0 ? 'realistic' : 'username'),
-    passwordLength: () => randomRange(24, 48),
-    categories: { upper: true, lower: true, digits: true, symbols: true },
+    words: () => randomRange(4, 6),
   },
 };
 
@@ -184,15 +239,13 @@ function applyChaosLevel(level) {
   const preset = CHAOS_LEVELS[level];
 
   document.getElementById('name-style').value = preset.nameStyle();
-  document.getElementById('password-length').value = preset.passwordLength();
-  document.getElementById('opt-upper').checked = preset.categories.upper;
-  document.getElementById('opt-lower').checked = preset.categories.lower;
-  document.getElementById('opt-digits').checked = preset.categories.digits;
-  document.getElementById('opt-symbols').checked = preset.categories.symbols;
+  document.getElementById('password-style').value = 'passphrase';
+  document.getElementById('password-words').value = preset.words();
+  updatePasswordStyleControls();
 
   document.getElementById('name-output').value = generateNameForCurrentStyle();
   document.getElementById('password-error').textContent = '';
-  document.getElementById('password-output').value = generatePassword(readPasswordOptions());
+  document.getElementById('password-output').value = generatePasswordForCurrentStyle();
 
   document.querySelectorAll('.chaos-btn').forEach((b) => {
     b.classList.toggle('active', b.dataset.level === level);

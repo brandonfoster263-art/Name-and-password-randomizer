@@ -105,6 +105,10 @@ button.primary {
   font-family: ui-monospace, monospace;
 }
 
+.hidden {
+  display: none;
+}
+
 .error {
   color: #b91c1c;
   font-size: 0.85rem;

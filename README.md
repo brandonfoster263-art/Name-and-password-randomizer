@@ -4,7 +4,13 @@ A small dependency-free Node.js CLI that generates random names and secure passw
 
 Each name carries a random 6-digit suffix, which multiplies the word lists into
 a pool of several billion unique names per style — far more than the requested
-50 million — without storing a giant list of literal names.
+50 million — without storing a giant list of literal names. Usernames pull from
+animal, cosmic, nature, myth, and tech word categories, so they aren't always
+animal-themed.
+
+Passwords default to a **memorable passphrase** (real words joined by hyphens,
+e.g. `Crimson-Nebula-Falcon-Quantum-82!`) instead of jumbled random characters.
+A fully-random character style is still available via `--pw-style random`.
 
 ## Requirements
 
@@ -14,7 +20,7 @@ a pool of several billion unique names per style — far more than the requested
 
 ```sh
 node bin/cli.js name [--style realistic|username] [--count N]
-node bin/cli.js password [--length N] [--no-upper] [--no-lower] [--no-digits] [--no-symbols] [--count N]
+node bin/cli.js password [--pw-style passphrase|random] [--words N] [--length N] [--no-upper] [--no-lower] [--no-digits] [--no-symbols] [--count N]
 node bin/cli.js both [name & password options combined]
 ```
 
@@ -22,7 +28,8 @@ Or, after `npm link`, use the `randgen` command directly:
 
 ```sh
 randgen name --style username --count 3
-randgen password --length 20 --no-symbols
+randgen password --words 5
+randgen password --pw-style random --length 20 --no-symbols
 randgen both
 ```
 
@@ -33,14 +40,17 @@ $ node bin/cli.js name
 Jordan Mitchell #048213
 
 $ node bin/cli.js name --style username
-SwiftFalcon048213
+QuantumNebula048213
 
-$ node bin/cli.js password --length 20
+$ node bin/cli.js password
+Crimson-Nebula-Falcon-Quantum-82!
+
+$ node bin/cli.js password --pw-style random --length 20
 xT8!kLp2@qZ9vR4#mN7$
 
-$ node bin/cli.js both --style username --length 12
+$ node bin/cli.js both --style username
 Name: BraveOtter719042
-Password: aQ3!xP9mZ@kL
+Password: Storm-Oracle-Vivid-Byte-14&
 ```
 
 ## Testing
