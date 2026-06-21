@@ -23,16 +23,17 @@ test('throws when length is too small for selected categories', () => {
   assert.throws(() => generatePassword({ length: 1 }));
 });
 
-test('passphrase has the requested word count and a number+symbol suffix', () => {
+test('passphrase has the requested word count, an action word, and a number+symbol suffix', () => {
   const phrase = generatePassphrase({ words: 4 });
   const parts = phrase.split('-');
-  assert.equal(parts.length, 5);
-  assert.match(parts[4], /^\d{2}[!@#$%&*]$/);
+  assert.equal(parts.length, 6);
+  assert.match(parts[4], /^[A-Za-z]+$/);
+  assert.match(parts[5], /^\d{2}[!@#$%&*]$/);
 });
 
 test('passphrase words are distinct', () => {
   const phrase = generatePassphrase({ words: 5 });
-  const words = phrase.split('-').slice(0, -1);
+  const words = phrase.split('-').slice(0, -2);
   assert.equal(new Set(words).size, words.length);
 });
 

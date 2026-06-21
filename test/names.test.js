@@ -9,7 +9,7 @@ import {
 
 test('realistic name has a first, last, and 6-digit suffix', () => {
   const name = generateRealisticName();
-  assert.match(name, /^[A-Za-z]+ [A-Za-z]+ #\d{6}$/);
+  assert.match(name, /^[A-Za-z]+( "[A-Za-z]+")? [A-Za-z]+ #\d{6}$/);
 });
 
 test('username ends with a 6-digit suffix', () => {

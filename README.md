@@ -6,11 +6,14 @@ Each name carries a random 6-digit suffix, which multiplies the word lists into
 a pool of several billion unique names per style — far more than the requested
 50 million — without storing a giant list of literal names. Usernames pull from
 animal, cosmic, nature, myth, and tech word categories, so they aren't always
-animal-themed.
+animal-themed, and rotate through several styles (titles, flair words, an
+`xX...Xx` wrap) instead of one flat shape. Realistic names occasionally pick up
+a quoted nickname, e.g. `Jordan "Ace" Mitchell`.
 
-Passwords default to a **memorable passphrase** (real words joined by hyphens,
-e.g. `Crimson-Nebula-Falcon-Quantum-82!`) instead of jumbled random characters.
-A fully-random character style is still available via `--pw-style random`.
+Passwords default to a **memorable passphrase** (real words joined by hyphens
+and capped with an action word, e.g. `Crimson-Nebula-Falcon-Quantum-Conquers-82!`)
+instead of jumbled random characters. A fully-random character style is still
+available via `--pw-style random`.
 
 ## Requirements
 
@@ -37,20 +40,20 @@ randgen both
 
 ```sh
 $ node bin/cli.js name
-Jordan Mitchell #048213
+Jordan "Ace" Mitchell #048213
 
 $ node bin/cli.js name --style username
-QuantumNebula048213
+xXQuantumNebulaXx048213
 
 $ node bin/cli.js password
-Crimson-Nebula-Falcon-Quantum-82!
+Crimson-Nebula-Falcon-Quantum-Conquers-82!
 
 $ node bin/cli.js password --pw-style random --length 20
 xT8!kLp2@qZ9vR4#mN7$
 
 $ node bin/cli.js both --style username
-Name: BraveOtter719042
-Password: Storm-Oracle-Vivid-Byte-14&
+Name: BraveOtterOG719042
+Password: Storm-Oracle-Vivid-Byte-Strikes-14&
 ```
 
 ## Testing

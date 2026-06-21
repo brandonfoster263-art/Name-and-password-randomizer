@@ -11,7 +11,7 @@ Usage:
   randgen --help
 
 Password styles:
-  passphrase (default) - memorable words joined with hyphens, e.g. Crimson-Nebula-Falcon-Quantum-82!
+  passphrase (default) - memorable words joined with hyphens, e.g. Crimson-Nebula-Falcon-Quantum-Conquers-82!
   random                - fully random characters, configurable via --length and --no-* flags
 
 Examples:

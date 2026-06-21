@@ -45,6 +45,26 @@ const LAST_NAMES = [
   'Isaacs', 'Jennings',
 ];
 
+// Quoted nicknames give "realistic" names some swagger, e.g. Jordan "Ace" Mitchell.
+const NICKNAMES = [
+  'Ace', 'Maverick', 'Doc', 'Ghost', 'Blaze', 'Rebel', 'Tank', 'Rocket',
+  'Shadow', 'Lucky', 'Razor', 'Echo', 'Sparky', 'Domino', 'Wrench', 'Tiny',
+  'Slick', 'Breeze', 'Hawkeye', 'Nomad', 'Diesel', 'Switch', 'Static', 'Marbles',
+];
+
+// Username flavor words: TITLES go in front, FLAIRS tack on the end, both
+// rotated in by USERNAME_TEMPLATES below so usernames aren't just a flat
+// AdjectiveNoun concatenation.
+const TITLES = [
+  'The', 'Captain', 'Agent', 'Doctor', 'Professor', 'Master', 'General',
+  'Commander', 'Baron', 'Admiral',
+];
+
+const FLAIRS = [
+  'Prime', 'OG', 'Reloaded', 'Unleashed', 'Zero', 'MKII', 'Royale',
+  'Supreme', 'Ultra', 'Maximus', 'Override', 'Ascendant',
+];
+
 const ADJECTIVES = [
   'Swift', 'Brave', 'Silent', 'Clever', 'Mighty', 'Lucky', 'Fuzzy', 'Bold',
   'Quick', 'Wild', 'Crimson', 'Frosty', 'Golden', 'Rapid', 'Stormy',
@@ -88,15 +108,47 @@ function randomSuffix() {
 }
 
 function generateRealisticName() {
-  return `${pick(FIRST_NAMES)} ${pick(LAST_NAMES)} #${randomSuffix()}`;
+  const first = pick(FIRST_NAMES);
+  const last = pick(LAST_NAMES);
+  const suffix = randomSuffix();
+  if (secureRandomInt(3) === 0) {
+    return `${first} "${pick(NICKNAMES)}" ${last} #${suffix}`;
+  }
+  return `${first} ${last} #${suffix}`;
 }
 
+// Several templates rotate through so usernames read as distinct styles
+// rather than always the same AdjectiveNoun+digits shape. Every template
+// still ends with the 6-digit suffix.
+const USERNAME_TEMPLATES = [
+  ({ adjective, noun, suffix }) => `${adjective}${noun}${suffix}`,
+  ({ adjective, noun, suffix }) => `${adjective}_${noun}_${suffix}`,
+  ({ title, adjective, noun, suffix }) => `${title}${adjective}${noun}${suffix}`,
+  ({ adjective, noun, flair, suffix }) => `${adjective}${noun}${flair}${suffix}`,
+  ({ adjective, noun, suffix }) => `xX${adjective}${noun}Xx${suffix}`,
+];
+
 function generateUsername() {
-  return `${pick(ADJECTIVES)}${pick(NOUNS)}${randomSuffix()}`;
+  const context = {
+    adjective: pick(ADJECTIVES),
+    noun: pick(NOUNS),
+    title: pick(TITLES),
+    flair: pick(FLAIRS),
+    suffix: randomSuffix(),
+  };
+  return pick(USERNAME_TEMPLATES)(context);
 }
 
 const PASSPHRASE_WORDS = [...ADJECTIVES, ...NOUNS];
 const PASSPHRASE_SYMBOLS = '!@#$%&*';
+
+// One of these always closes out the word chain, turning a flat list of
+// words into a mini battle cry, e.g. Crimson-Falcon-Quantum-Conquers-42!
+const ACTION_WORDS = [
+  'Strikes', 'Soars', 'Ignites', 'Unleashed', 'Charges', 'Erupts',
+  'Ascends', 'Prowls', 'Sparks', 'Roars', 'Smashes', 'Blazes',
+  'Conquers', 'Awakens', 'Reigns',
+];
 
 function pickUniqueWords(count) {
   if (count < 2) throw new Error('words must be at least 2');
@@ -116,9 +168,10 @@ function pickUniqueWords(count) {
 
 function generatePassphrase({ words = 4 } = {}) {
   const chosen = pickUniqueWords(words);
+  const action = pick(ACTION_WORDS);
   const number = String(secureRandomInt(100)).padStart(2, '0');
   const symbol = PASSPHRASE_SYMBOLS[secureRandomInt(PASSPHRASE_SYMBOLS.length)];
-  return `${chosen.join('-')}-${number}${symbol}`;
+  return `${chosen.join('-')}-${action}-${number}${symbol}`;
 }
 
 const CHARSETS = {
