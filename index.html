@@ -11,6 +11,17 @@
     <h1>Name &amp; Password Randomizer</h1>
 
     <section class="card">
+      <h2>Chaos Level</h2>
+      <p class="chaos-hint">Pick an intensity — it sets the controls below and generates instantly.</p>
+      <div class="chaos-buttons">
+        <button class="chaos-btn calm" data-level="calm">🌿 Calm</button>
+        <button class="chaos-btn wild" data-level="wild">⚡ Wild</button>
+        <button class="chaos-btn crazy" data-level="crazy">🔥 Crazy</button>
+        <button class="chaos-btn chaos" data-level="chaos">💀 Chaos</button>
+      </div>
+    </section>
+
+    <section class="card" id="name-card">
       <h2>Name</h2>
       <div class="controls">
         <label>
@@ -28,7 +39,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section class="card" id="password-card">
       <h2>Password</h2>
       <div class="controls">
         <label>

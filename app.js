@@ -153,6 +153,64 @@ document.getElementById('generate-both').addEventListener('click', () => {
   }
 });
 
+function randomRange(min, max) {
+  return min + secureRandomInt(max - min + 1);
+}
+
+const CHAOS_LEVELS = {
+  calm: {
+    nameStyle: () => 'realistic',
+    passwordLength: () => 10,
+    categories: { upper: false, lower: true, digits: true, symbols: false },
+  },
+  wild: {
+    nameStyle: () => 'realistic',
+    passwordLength: () => randomRange(12, 18),
+    categories: { upper: true, lower: true, digits: true, symbols: false },
+  },
+  crazy: {
+    nameStyle: () => 'username',
+    passwordLength: () => randomRange(18, 30),
+    categories: { upper: true, lower: true, digits: true, symbols: true },
+  },
+  chaos: {
+    nameStyle: () => (secureRandomInt(2) === 0 ? 'realistic' : 'username'),
+    passwordLength: () => randomRange(24, 48),
+    categories: { upper: true, lower: true, digits: true, symbols: true },
+  },
+};
+
+function applyChaosLevel(level) {
+  const preset = CHAOS_LEVELS[level];
+
+  document.getElementById('name-style').value = preset.nameStyle();
+  document.getElementById('password-length').value = preset.passwordLength();
+  document.getElementById('opt-upper').checked = preset.categories.upper;
+  document.getElementById('opt-lower').checked = preset.categories.lower;
+  document.getElementById('opt-digits').checked = preset.categories.digits;
+  document.getElementById('opt-symbols').checked = preset.categories.symbols;
+
+  document.getElementById('name-output').value = generateNameForCurrentStyle();
+  document.getElementById('password-error').textContent = '';
+  document.getElementById('password-output').value = generatePassword(readPasswordOptions());
+
+  document.querySelectorAll('.chaos-btn').forEach((b) => {
+    b.classList.toggle('active', b.dataset.level === level);
+  });
+
+  if (level === 'chaos') {
+    [document.getElementById('name-card'), document.getElementById('password-card')].forEach((card) => {
+      card.classList.remove('shake');
+      void card.offsetWidth; // restart animation
+      card.classList.add('shake');
+    });
+  }
+}
+
+document.querySelectorAll('.chaos-btn').forEach((btn) => {
+  btn.addEventListener('click', () => applyChaosLevel(btn.dataset.level));
+});
+
 document.querySelectorAll('.copy-btn').forEach((btn) => {
   btn.addEventListener('click', async () => {
     const target = document.getElementById(btn.dataset.target);
